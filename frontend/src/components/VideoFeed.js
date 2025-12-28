@@ -1,6 +1,8 @@
 import React from 'react';
 import { FaBug } from 'react-icons/fa';
 
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+
 const DetectedInsectDisplay = ({ detection, detectionHistory }) => {
   // Show the most recent detection or a placeholder
   const currentDetection = detection && detection.name !== 'None' ? detection : null;
@@ -19,16 +21,26 @@ const DetectedInsectDisplay = ({ detection, detectionHistory }) => {
 
   return (
     <div className="detection-display">
+      {/* Video Feed */}
+      <div className="video-feed-container">
+        <img 
+          src={`${API_BASE_URL}/video_feed`} 
+          alt="Live Video Feed" 
+          className="video-feed"
+        />
+      </div>
+
+      {/* Detection Info */}
       {currentDetection ? (
         <div className="detection-active">
           <div className="detection-status-badge">
             🚨 ACTIVE DETECTION
           </div>
-          <div className="detection-image-placeholder">
-            <FaBug className="insect-icon-large" />
-            <div className="detection-name-large">{currentDetection.name}</div>
-          </div>
           <div className="detection-info-grid">
+            <div className="detection-info-item">
+              <div className="info-label">Detected Pest</div>
+              <div className="info-value detection-name">{currentDetection.name}</div>
+            </div>
             <div className="detection-info-item">
               <div className="info-label">Confidence Level</div>
               <div className="info-value">{currentDetection.confidence}%</div>
@@ -61,12 +73,11 @@ const DetectedInsectDisplay = ({ detection, detectionHistory }) => {
           <div className="detection-status-badge status-clear">
             ✅ NO CURRENT THREATS
           </div>
-          <div className="detection-image-placeholder previous">
-            <FaBug className="insect-icon-large faded" />
-            <div className="detection-subtitle">Last Detection</div>
-            <div className="detection-name-medium">{latestDetection.name}</div>
-          </div>
           <div className="detection-info-grid">
+            <div className="detection-info-item">
+              <div className="info-label">Last Detected</div>
+              <div className="info-value detection-name">{latestDetection.name}</div>
+            </div>
             <div className="detection-info-item">
               <div className="info-label">Confidence</div>
               <div className="info-value">{latestDetection.confidence}%</div>
@@ -98,11 +109,6 @@ const DetectedInsectDisplay = ({ detection, detectionHistory }) => {
         <div className="detection-empty">
           <div className="detection-status-badge status-monitoring">
             👁️ MONITORING
-          </div>
-          <div className="detection-image-placeholder empty">
-            <FaBug className="insect-icon-large faded" />
-            <div className="detection-subtitle">System Active</div>
-            <div className="detection-message">No insects detected yet</div>
           </div>
           <div className="system-info">
             <p>The system is actively monitoring for pests.</p>

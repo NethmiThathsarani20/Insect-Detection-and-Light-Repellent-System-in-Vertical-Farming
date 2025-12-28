@@ -3,7 +3,7 @@ import time
 import cv2
 import numpy as np
 import threading
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, Response
 from flask_cors import CORS
 from ultralytics import YOLO
 
@@ -43,20 +43,31 @@ def index():
 @app.route("/switch_source/<source>")
 def switch_source(source):
     global active_source, webcam
-    active_source = source
     
     if source == 'webcam':
-        if webcam is None:
-            # Try index 0 or 1 if 0 doesn't work
+        if webcam is None or not webcam.isOpened():
+            # Try to open webcam
             webcam = cv2.VideoCapture(0)
-            # Start webcam processing thread
-            threading.Thread(target=webcam_processing_loop, daemon=True).start()
-    else:
+            if not webcam.isOpened():
+                # Try alternative index
+                webcam = cv2.VideoCapture(1)
+            
+            if webcam.isOpened():
+                active_source = source
+                # Start webcam processing thread
+                threading.Thread(target=webcam_processing_loop, daemon=True).start()
+                return jsonify({"status": "success", "source": source})
+            else:
+                return jsonify({"status": "error", "message": "Failed to open webcam"}), 500
+        else:
+            active_source = source
+            return jsonify({"status": "success", "source": source})
+    else:  # esp32
+        active_source = source
         if webcam is not None:
             webcam.release()
             webcam = None
-            
-    return jsonify({"status": "success", "source": source})
+        return jsonify({"status": "success", "source": source})
 
 # --- WEBCAM PROCESSING LOOP (Background Thread) ---
 def webcam_processing_loop():
@@ -198,6 +209,38 @@ def get_status():
         "remaining_time": remaining,
         "source": active_source
     })
+
+# --- 6. VIDEO FEED STREAM ---
+def generate_frames():
+    """Generate video frames for streaming"""
+    global global_frame
+    
+    while True:
+        if global_frame is not None:
+            # Encode frame as JPEG
+            ret, buffer = cv2.imencode('.jpg', global_frame)
+            if ret:
+                frame = buffer.tobytes()
+                yield (b'--frame\r\n'
+                       b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+        else:
+            # Send a placeholder frame if no frame is available
+            placeholder = np.zeros((480, 640, 3), dtype=np.uint8)
+            cv2.putText(placeholder, "Waiting for video feed...", (150, 240), 
+                       cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+            ret, buffer = cv2.imencode('.jpg', placeholder)
+            if ret:
+                frame = buffer.tobytes()
+                yield (b'--frame\r\n'
+                       b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+        
+        time.sleep(0.033)  # ~30 FPS
+
+@app.route('/video_feed')
+def video_feed():
+    """Video streaming route"""
+    return Response(generate_frames(),
+                   mimetype='multipart/x-mixed-replace; boundary=frame')
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)

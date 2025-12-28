@@ -82,10 +82,16 @@ function App() {
   // Switch video source
   const handleSourceChange = async (source) => {
     try {
-      await axios.get(`${API_BASE_URL}/switch_source/${source}`);
-      setCurrentSource(source);
+      const response = await axios.get(`${API_BASE_URL}/switch_source/${source}`);
+      if (response.data.status === 'success') {
+        setCurrentSource(source);
+      } else {
+        console.error('Error switching source:', response.data.message);
+        alert(`Failed to switch to ${source}: ${response.data.message || 'Unknown error'}`);
+      }
     } catch (error) {
       console.error('Error switching source:', error);
+      alert(`Failed to switch to ${source}. Please check if the ${source} is available.`);
     }
   };
 
