@@ -4,6 +4,7 @@ import cv2
 import numpy as np
 import threading
 import base64
+from datetime import datetime
 from flask import Flask, request, jsonify, render_template, send_file
 from flask_cors import CORS
 from ultralytics import YOLO
@@ -190,8 +191,8 @@ def process_frame_logic(img):
                 current_confidence = detected_confidence
                 treatment_end_time = current_time + TREATMENT_DURATION
                 
-                # Save the detected image
-                timestamp = int(current_time)
+                # Save the detected image with precise timestamp (milliseconds)
+                timestamp = datetime.now().strftime('%Y%m%d_%H%M%S_%f')[:-3]  # [:-3] truncates to milliseconds
                 image_filename = f"{detected_pest}_{timestamp}.jpg"
                 image_path = os.path.join(DETECTED_IMAGES_DIR, image_filename)
                 cv2.imwrite(image_path, img)

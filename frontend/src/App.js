@@ -66,7 +66,7 @@ function App() {
           setLastDetection(null);
         }
         setCurrentDetection(null);
-        // Keep the image for a while even when detection clears
+        // Note: Image persists until a new detection occurs
       } else if (data.pest !== 'None' && currentDetection === null) {
         // Recreate current detection if page was refreshed
         const now = new Date();
@@ -98,7 +98,8 @@ function App() {
       }
     } catch (error) {
       console.error('Error switching source:', error);
-      alert(`Failed to switch to ${source}. Please check if the ${source} is available.`);
+      const sourceType = source === 'webcam' ? 'webcam' : 'ESP32-CAM';
+      alert(`Failed to switch to ${sourceType}. Please ensure your ${sourceType} is connected and not being used by another application.`);
     }
   };
 
