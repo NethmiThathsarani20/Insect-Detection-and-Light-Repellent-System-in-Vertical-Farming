@@ -47,7 +47,7 @@ A professional IoT system for detecting insects in vertical farming environments
 
 1. Install Python dependencies:
 ```bash
-pip install flask flask-cors opencv-python numpy ultralytics
+pip install -r requirements.txt
 ```
 
 2. Ensure the YOLO model file `best (2).pt` is in the root directory
