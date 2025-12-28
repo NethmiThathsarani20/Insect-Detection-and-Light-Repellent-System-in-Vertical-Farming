@@ -3,9 +3,11 @@ import time
 import cv2
 import numpy as np
 from flask import Flask, request, jsonify, render_template, Response
+from flask_cors import CORS
 from ultralytics import YOLO
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS for React frontend
 
 # --- CONFIGURATION ---
 # Loading the uploaded model
