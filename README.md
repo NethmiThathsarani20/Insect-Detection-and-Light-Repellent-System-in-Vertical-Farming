@@ -4,7 +4,7 @@ A professional IoT system for detecting insects in vertical farming environments
 
 ## Features
 
-- 🔍 **Real-time Insect Detection**: AI-powered detection using YOLOv8
+- 🔍 **Real-time Insect Detection**: AI-powered detection using YOLOv11n (Nano)
 - 📹 **Dual Camera Support**: ESP32-CAM and Webcam input
 - 🚨 **Alert System**: Instant notifications when insects are detected
 - 🖼️ **Detection Display**: Shows detected insect information with details
@@ -13,10 +13,12 @@ A professional IoT system for detecting insects in vertical farming environments
 - 🎨 **Professional UI**: Modern, responsive React interface
 - ⏱️ **Treatment Timer**: Visual countdown for active repellent treatments
 
+> **Note:** For detailed model information, see [MODEL_INFO.md](MODEL_INFO.md)
+
 ## System Architecture
 
 ### Backend (Flask + Python)
-- YOLOv8 model for insect detection
+- YOLOv11n model for insect detection
 - Real-time video processing
 - REST API endpoints for frontend communication
 - Support for ESP32-CAM and webcam
@@ -146,7 +148,7 @@ int httpResponseCode = http.POST(imageData);
 ```
 .
 ├── server.py              # Flask backend server
-├── best (2).pt           # YOLOv8 trained model
+├── best.pt               # YOLOv11n trained model
 ├── index.html            # Original HTML dashboard
 ├── frontend/             # React application
 │   ├── public/

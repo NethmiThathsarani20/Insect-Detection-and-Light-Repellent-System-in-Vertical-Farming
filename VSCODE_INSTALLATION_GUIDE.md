@@ -210,7 +210,7 @@ source .venv/bin/activate
 
 **Solution:**
 - Ensure the `best.pt` file is in the project root directory
-- This is the YOLOv8 trained model file
+- This is the YOLOv11n trained model file
 
 ## 📚 Additional Resources
 
