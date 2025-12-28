@@ -74,4 +74,4 @@ All project documentation has been updated to correctly reference YOLOv11n inste
 
 ---
 
-**Last Verified**: December 28, 2025
+**Last Verified**: Current as of model inspection (December 2024)
