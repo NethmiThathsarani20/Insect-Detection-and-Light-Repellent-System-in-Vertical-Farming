@@ -10,7 +10,7 @@ This report documents the comprehensive system check performed on the Insect Det
 
 ### What Was Tested:
 - ✅ Python backend (Flask server)
-- ✅ YOLO model (best (2).pt)
+- ✅ YOLOv11n model (best.pt)
 - ✅ React frontend
 - ✅ All API endpoints
 - ✅ Component integration
@@ -30,7 +30,7 @@ This report documents the comprehensive system check performed on the Insect Det
 ### Backend (Python/Flask):
 - Server starts and runs correctly
 - All endpoints functional
-- YOLO model loads successfully (5 insect classes)
+- YOLOv11n model loads successfully (5 insect classes)
 - Image processing working (~102ms per inference)
 
 ### Frontend (React):

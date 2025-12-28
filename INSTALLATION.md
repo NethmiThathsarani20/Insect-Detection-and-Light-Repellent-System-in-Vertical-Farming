@@ -140,7 +140,7 @@ You should see the **Smart Pest Management System** dashboard with:
 - Reinstall: `pip install -r requirements.txt`
 
 **Problem: "best.pt not found"**
-- Ensure the `best.pt` model file is in the project root folder
+- Ensure the `best.pt` YOLOv11n model file is in the project root folder
 
 ### Frontend Issues
 

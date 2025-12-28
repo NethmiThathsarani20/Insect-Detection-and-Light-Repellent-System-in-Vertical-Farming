@@ -11,7 +11,7 @@ app = Flask(__name__)
 CORS(app)  # Enable CORS for React frontend
 
 # --- CONFIGURATION ---
-# Loading the uploaded model
+# Loading the YOLOv11n trained model
 model = YOLO("best.pt")
 
 # Class names based on your training data

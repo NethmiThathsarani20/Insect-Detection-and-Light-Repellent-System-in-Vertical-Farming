@@ -35,7 +35,7 @@ Successfully implemented a professional, attractive React UI for an IoT-based in
 
 ## Technical Stack
 - **Frontend**: React 18, Axios, React Icons
-- **Backend**: Flask, Flask-CORS, OpenCV, Ultralytics YOLO
+- **Backend**: Flask, Flask-CORS, OpenCV, Ultralytics YOLOv11n
 - **Styling**: Custom CSS with professional design system
 - **State Management**: React Hooks (useState, useCallback, useEffect)
 - **Build Tool**: Create React App
@@ -60,7 +60,7 @@ Successfully implemented a professional, attractive React UI for an IoT-based in
 ## How It Works
 
 1. **ESP32-CAM** captures images and sends to Flask backend
-2. **YOLO model** detects insects with confidence levels
+2. **YOLOv11n model** detects insects with confidence levels
 3. **Backend** processes detection and determines LED pattern
 4. **React UI** polls backend every 500ms for status
 5. **When insect detected**:
