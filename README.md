@@ -38,31 +38,35 @@ A professional IoT system for detecting insects in vertical farming environments
 
 ## Installation
 
+📘 **[Quick Installation Guide →](INSTALLATION.md)** - Complete setup instructions with troubleshooting
+
 ### Prerequisites
 - Python 3.8+
 - Node.js 14+
-- npm or yarn
 
-**Note:** For optimal VS Code performance and faster virtual environment loading, see [VSCODE_SETUP.md](VSCODE_SETUP.md)
+**Optional:** For VS Code users, see [VSCODE_SETUP.md](VSCODE_SETUP.md) for editor optimization tips
 
 ### Backend Setup
 
-1. Install Python dependencies:
+Run automated setup script:
+
+**Windows:** `setup.bat`  
+**Linux/macOS:** `./setup.sh`
+
+Or manually:
 ```bash
+# Create virtual environment
+python -m venv .venv
+
+# Activate (Windows: .venv\Scripts\activate, Linux/macOS: source .venv/bin/activate)
+# Then install dependencies
 pip install -r requirements.txt
 ```
 
-2. Ensure the YOLO model file `best (2).pt` is in the root directory
-
 ### Frontend Setup
 
-1. Navigate to the frontend directory:
 ```bash
 cd frontend
-```
-
-2. Install dependencies:
-```bash
 npm install
 ```
 
@@ -71,10 +75,14 @@ npm install
 ### Start Backend Server
 
 ```bash
+# Activate virtual environment first
+# Windows: .venv\Scripts\activate
+# Linux/macOS: source .venv/bin/activate
+
 python server.py
 ```
 
-The backend server will run on `http://localhost:5000`
+Backend runs on `http://localhost:5000`
 
 ### Start React Frontend
 
@@ -85,7 +93,7 @@ cd frontend
 npm start
 ```
 
-The React app will run on `http://localhost:3000`
+Frontend runs on `http://localhost:3000`
 
 ### For Production Build
 
