@@ -98,7 +98,7 @@ function App() {
       }
     } catch (error) {
       console.error('Error switching source:', error);
-      const sourceType = source === 'webcam' ? 'webcam' : 'ESP32-CAM';
+      const sourceType = source === 'webcam' ? 'Webcam' : 'ESP32-CAM';
       alert(`Failed to switch to ${sourceType}. Please ensure your ${sourceType} is connected and not being used by another application.`);
     }
   };

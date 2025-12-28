@@ -29,7 +29,7 @@ global_frame = None
 active_source = 'esp32'  # Options: 'esp32' or 'webcam'
 webcam = None
 latest_detection_image = None  # Store latest detected image path
-latest_detection_image_base64 = None  # Store base64 encoded image 
+latest_detection_image_base64 = None  # Store base64 encoded image
 
 # --- TIMING & LOGIC VARIABLES ---
 first_detection_time = None 
@@ -191,8 +191,8 @@ def process_frame_logic(img):
                 current_confidence = detected_confidence
                 treatment_end_time = current_time + TREATMENT_DURATION
                 
-                # Save the detected image with precise timestamp (milliseconds)
-                timestamp = datetime.now().strftime('%Y%m%d_%H%M%S_%f')[:-3]  # [:-3] truncates to milliseconds
+                # Save the detected image with timestamp (convert microseconds to milliseconds)
+                timestamp = datetime.now().strftime('%Y%m%d_%H%M%S_%f')[:-3]  # Truncate last 3 digits for milliseconds
                 image_filename = f"{detected_pest}_{timestamp}.jpg"
                 image_path = os.path.join(DETECTED_IMAGES_DIR, image_filename)
                 cv2.imwrite(image_path, img)
