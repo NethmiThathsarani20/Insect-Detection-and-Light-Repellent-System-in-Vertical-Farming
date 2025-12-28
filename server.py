@@ -2,7 +2,8 @@ import os
 import time
 import cv2
 import numpy as np
-from flask import Flask, request, jsonify, render_template, Response
+import threading
+from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 from ultralytics import YOLO
 
@@ -11,7 +12,7 @@ CORS(app)  # Enable CORS for React frontend
 
 # --- CONFIGURATION ---
 # Loading the uploaded model
-model = YOLO("best (2).pt") 
+model = YOLO("best.pt")
 
 # Class names based on your training data
 PEST_CLASSES = ["Aphids", "Mites", "RedSpider", "Thrips", "Whitefly"]
@@ -47,13 +48,31 @@ def switch_source(source):
     if source == 'webcam':
         if webcam is None:
             # Try index 0 or 1 if 0 doesn't work
-            webcam = cv2.VideoCapture(0) 
+            webcam = cv2.VideoCapture(0)
+            # Start webcam processing thread
+            threading.Thread(target=webcam_processing_loop, daemon=True).start()
     else:
         if webcam is not None:
             webcam.release()
             webcam = None
             
     return jsonify({"status": "success", "source": source})
+
+# --- WEBCAM PROCESSING LOOP (Background Thread) ---
+def webcam_processing_loop():
+    global webcam, active_source
+    
+    while True:
+        if active_source == 'webcam' and webcam is not None:
+            success, frame = webcam.read()
+            if success:
+                process_frame_logic(frame)
+            else:
+                break
+        else:
+            break
+        
+        time.sleep(0.1)  # Process at ~10 FPS
 
 # --- 3. ESP32 IMAGE RECEIVER (POST) ---
 @app.route("/detect", methods=["POST"])
@@ -163,31 +182,7 @@ def process_frame_logic(img):
         current_confidence = 0
         return 1
 
-# --- 5. WEBCAM LOOP ---
-def generate_frames():
-    global global_frame, webcam, active_source
-    
-    while True:
-        if active_source == 'webcam' and webcam is not None:
-            success, frame = webcam.read()
-            if success:
-                process_frame_logic(frame)
-        
-        if global_frame is not None:
-            try:
-                ret, buffer = cv2.imencode('.jpg', global_frame)
-                frame_bytes = buffer.tobytes()
-                yield (b'--frame\r\n'
-                       b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
-            except Exception as e:
-                pass
-        
-        time.sleep(0.05) 
-
-# --- 6. ROUTES FOR UI DATA ---
-@app.route('/video_feed')
-def video_feed():
-    return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
+# --- 5. ROUTES FOR UI DATA ---
 
 @app.route('/get_status')
 def get_status():
