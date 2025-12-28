@@ -1,31 +1,118 @@
 import React from 'react';
+import { FaBug } from 'react-icons/fa';
 
-const VideoFeed = ({ videoSource, currentSource }) => {
+const DetectedInsectDisplay = ({ detection, detectionHistory }) => {
+  // Show the most recent detection or a placeholder
+  const currentDetection = detection && detection.name !== 'None' ? detection : null;
+  const latestDetection = currentDetection || (detectionHistory.length > 0 ? detectionHistory[0] : null);
+
+  const getLEDColor = (pattern) => {
+    switch (pattern) {
+      case 2:
+        return { color: '#3498db', name: 'Blue' };
+      case 4:
+        return { color: '#c0392b', name: 'Red' };
+      default:
+        return { color: '#9b59b6', name: 'Purple' };
+    }
+  };
+
   return (
-    <div className="video-section">
-      <div className="video-wrapper">
-        <div className="live-indicator">
-          <div className="blink"></div>
-          LIVE FEED
+    <div className="detection-display">
+      {currentDetection ? (
+        <div className="detection-active">
+          <div className="detection-status-badge">
+            🚨 ACTIVE DETECTION
+          </div>
+          <div className="detection-image-placeholder">
+            <FaBug className="insect-icon-large" />
+            <div className="detection-name-large">{currentDetection.name}</div>
+          </div>
+          <div className="detection-info-grid">
+            <div className="detection-info-item">
+              <div className="info-label">Confidence Level</div>
+              <div className="info-value">{currentDetection.confidence}%</div>
+            </div>
+            <div className="detection-info-item">
+              <div className="info-label">Date</div>
+              <div className="info-value">{currentDetection.date}</div>
+            </div>
+            <div className="detection-info-item">
+              <div className="info-label">Time</div>
+              <div className="info-value">{currentDetection.time}</div>
+            </div>
+            <div className="detection-info-item">
+              <div className="info-label">LED Repellent</div>
+              <div className="info-value led-color-display">
+                <span 
+                  className="led-indicator-large" 
+                  style={{ 
+                    backgroundColor: getLEDColor(currentDetection.pattern).color,
+                    color: getLEDColor(currentDetection.pattern).color 
+                  }}
+                ></span>
+                {getLEDColor(currentDetection.pattern).name}
+              </div>
+            </div>
+          </div>
         </div>
-        <img 
-          src={videoSource} 
-          alt="Camera Feed"
-          onError={(e) => {
-            e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgZmlsbD0iIzMzMyIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiNmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5Db25uZWN0aW5nIHRvIGNhbWVyYS4uLjwvdGV4dD48L3N2Zz4=';
-          }}
-        />
-      </div>
-      <div className="video-info">
-        <span>
-          Input Source: <strong>{currentSource === 'esp32' ? 'ESP32-CAM' : 'Webcam'}</strong>
-        </span>
-        <span>
-          Resolution: <strong>640x480</strong>
-        </span>
-      </div>
+      ) : latestDetection ? (
+        <div className="detection-previous">
+          <div className="detection-status-badge status-clear">
+            ✅ NO CURRENT THREATS
+          </div>
+          <div className="detection-image-placeholder previous">
+            <FaBug className="insect-icon-large faded" />
+            <div className="detection-subtitle">Last Detection</div>
+            <div className="detection-name-medium">{latestDetection.name}</div>
+          </div>
+          <div className="detection-info-grid">
+            <div className="detection-info-item">
+              <div className="info-label">Confidence</div>
+              <div className="info-value">{latestDetection.confidence}%</div>
+            </div>
+            <div className="detection-info-item">
+              <div className="info-label">Date</div>
+              <div className="info-value">{latestDetection.date}</div>
+            </div>
+            <div className="detection-info-item">
+              <div className="info-label">Time</div>
+              <div className="info-value">{latestDetection.time}</div>
+            </div>
+            <div className="detection-info-item">
+              <div className="info-label">LED Used</div>
+              <div className="info-value led-color-display">
+                <span 
+                  className="led-indicator-large" 
+                  style={{ 
+                    backgroundColor: getLEDColor(latestDetection.pattern).color,
+                    color: getLEDColor(latestDetection.pattern).color 
+                  }}
+                ></span>
+                {getLEDColor(latestDetection.pattern).name}
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="detection-empty">
+          <div className="detection-status-badge status-monitoring">
+            👁️ MONITORING
+          </div>
+          <div className="detection-image-placeholder empty">
+            <FaBug className="insect-icon-large faded" />
+            <div className="detection-subtitle">System Active</div>
+            <div className="detection-message">No insects detected yet</div>
+          </div>
+          <div className="system-info">
+            <p>The system is actively monitoring for pests.</p>
+            <p>Alerts will appear when insects are detected.</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
-export default VideoFeed;
+export default DetectedInsectDisplay;
+

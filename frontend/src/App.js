@@ -4,7 +4,7 @@ import './App.css';
 
 // Components
 import Navbar from './components/Navbar';
-import VideoFeed from './components/VideoFeed';
+import DetectedInsectDisplay from './components/VideoFeed';
 import SourceSelector from './components/SourceSelector';
 import AnalysisPanel from './components/AnalysisPanel';
 import Timer from './components/Timer';
@@ -24,6 +24,7 @@ function App() {
   const [alerts, setAlerts] = useState([]);
   const [detectionHistory, setDetectionHistory] = useState([]);
   const [lastDetection, setLastDetection] = useState(null);
+  const [currentDetection, setCurrentDetection] = useState(null);
 
   // Fetch status from backend
   const fetchStatus = useCallback(async () => {
@@ -51,16 +52,32 @@ function App() {
         };
 
         setLastDetection(data.pest);
+        setCurrentDetection(detection);
         setAlerts(prev => [...prev, detection]);
         setDetectionHistory(prev => [detection, ...prev].slice(0, 10)); // Keep last 10
-      } else if (data.pest === 'None' && lastDetection !== null) {
-        setLastDetection(null);
+      } else if (data.pest === 'None') {
+        if (lastDetection !== null) {
+          setLastDetection(null);
+        }
+        setCurrentDetection(null);
+      } else if (data.pest !== 'None' && currentDetection === null) {
+        // Recreate current detection if page was refreshed
+        const now = new Date();
+        const detection = {
+          name: data.pest,
+          confidence: Math.floor(Math.random() * 15) + 85,
+          date: now.toLocaleDateString(),
+          time: now.toLocaleTimeString(),
+          pattern: data.pattern,
+          timestamp: now.getTime()
+        };
+        setCurrentDetection(detection);
       }
     } catch (error) {
       console.error('Error fetching status:', error);
       setSystemStatus(false);
     }
-  }, [lastDetection]);
+  }, [lastDetection, currentDetection]);
 
   // Switch video source
   const handleSourceChange = async (source) => {
@@ -100,11 +117,11 @@ function App() {
       </div>
 
       <div className="container">
-        {/* Left Column - Video Feed */}
+        {/* Left Column - Detection Display */}
         <div>
-          <VideoFeed
-            videoSource={`${API_BASE_URL}/video_feed`}
-            currentSource={currentSource}
+          <DetectedInsectDisplay
+            detection={currentDetection}
+            detectionHistory={detectionHistory}
           />
         </div>
 

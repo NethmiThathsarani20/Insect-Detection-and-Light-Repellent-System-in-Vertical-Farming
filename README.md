@@ -7,6 +7,7 @@ A professional IoT system for detecting insects in vertical farming environments
 - 🔍 **Real-time Insect Detection**: AI-powered detection using YOLOv8
 - 📹 **Dual Camera Support**: ESP32-CAM and Webcam input
 - 🚨 **Alert System**: Instant notifications when insects are detected
+- 🖼️ **Detection Display**: Shows detected insect information with details
 - 💡 **Automated LED Repellent**: Smart LED light control based on detected insect species
 - 📊 **Detection Analytics**: Track detection history with confidence levels
 - 🎨 **Professional UI**: Modern, responsive React interface
@@ -22,7 +23,7 @@ A professional IoT system for detecting insects in vertical farming environments
 
 ### Frontend (React)
 - Professional, attractive dashboard
-- Real-time video feed display
+- Detection display showing insect information
 - Alert notifications
 - Detection history tracking
 - LED status indicators
@@ -160,11 +161,12 @@ int httpResponseCode = http.POST(imageData);
 
 The React UI features:
 - Professional navigation bar with system status
-- Live video feed from ESP32-CAM or webcam
+- Detection display panel showing current/recent detections
 - Real-time analysis panel
 - Alert notifications when insects are detected
-- Detection history with confidence levels
+- Detection history with confidence levels and timestamps
 - Treatment timer countdown
+- LED repellent color indicators
 - Responsive design for all devices
 
 ## Future Enhancements
