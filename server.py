@@ -11,8 +11,16 @@ app = Flask(__name__)
 CORS(app)  # Enable CORS for React frontend
 
 # --- CONFIGURATION ---
-# Loading the uploaded model
-model = YOLO("best.pt")
+# Lazy load model on first use to avoid startup delays
+model = None
+MODEL_PATH = "best.pt"
+
+def get_model():
+    global model
+    if model is None:
+        print("Loading YOLO model... This may take a moment")
+        model = YOLO(MODEL_PATH)
+    return model
 
 # Class names based on your training data
 PEST_CLASSES = ["Aphids", "Mites", "RedSpider", "Thrips", "Whitefly"]
@@ -97,8 +105,9 @@ def process_frame_logic(img):
     global global_frame, first_detection_time, treatment_end_time 
     global current_active_pattern, current_pest_name, current_confidence, is_treatment_active
 
-    # AI Inference
-    results = model(img, conf=0.45)
+    # AI Inference (lazy load model on first use)
+    model_instance = get_model()
+    results = model_instance(img, conf=0.45)
     
     pest_found = False
     detected_pest = "None"
