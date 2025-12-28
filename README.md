@@ -4,7 +4,7 @@ A professional IoT system for detecting insects in vertical farming environments
 
 ## Features
 
-- 🔍 **Real-time Insect Detection**: AI-powered detection using YOLOv11n
+- 🔍 **Real-time Insect Detection**: AI-powered detection using YOLOv11n (Nano)
 - 📹 **Dual Camera Support**: ESP32-CAM and Webcam input
 - 🚨 **Alert System**: Instant notifications when insects are detected
 - 🖼️ **Detection Display**: Shows detected insect information with details
@@ -12,6 +12,8 @@ A professional IoT system for detecting insects in vertical farming environments
 - 📊 **Detection Analytics**: Track detection history with confidence levels
 - 🎨 **Professional UI**: Modern, responsive React interface
 - ⏱️ **Treatment Timer**: Visual countdown for active repellent treatments
+
+> **Note:** For detailed model information, see [MODEL_INFO.md](MODEL_INFO.md)
 
 ## System Architecture
 
