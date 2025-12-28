@@ -95,8 +95,6 @@ npm start
 
 Frontend runs on `http://localhost:3000`
 
-The React app will run on `http://localhost:3000`
-
 ### For Production Build
 
 ```bash
