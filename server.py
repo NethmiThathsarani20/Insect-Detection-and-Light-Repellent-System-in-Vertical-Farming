@@ -220,7 +220,20 @@ def process_frame_logic(img):
         current_confidence = 0
         return 1
 
-# --- 5. ROUTES FOR UI DATA ---
+# --- 5. VIDEO FEED ROUTE ---
+@app.route('/video_feed')
+def video_feed():
+    """Stream the current frame as JPEG"""
+    if global_frame is None:
+        # Return a blank placeholder image if no frame yet
+        blank = np.zeros((480, 640, 3), dtype=np.uint8)
+        _, buffer = cv2.imencode('.jpg', blank)
+        return buffer.tobytes(), 200, {'Content-Type': 'image/jpeg'}
+    
+    _, buffer = cv2.imencode('.jpg', global_frame)
+    return buffer.tobytes(), 200, {'Content-Type': 'image/jpeg'}
+
+# --- 6. ROUTES FOR UI DATA ---
 
 @app.route('/get_status')
 def get_status():
@@ -238,7 +251,7 @@ def get_status():
         "image": latest_detection_image_base64  # Send base64 encoded image
     })
 
-# --- 6. GET DETECTED IMAGE ---
+# --- 7. GET DETECTED IMAGE ---
 @app.route('/detected_image/<filename>')
 def get_detected_image(filename):
     """Serve a specific detected image"""
@@ -252,4 +265,4 @@ def get_detected_image(filename):
         return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=False)
