@@ -1,0 +1,62 @@
+{
+  // Python Configuration
+  // Note: VS Code will automatically use the correct path separator for your OS
+  // Windows: .venv/Scripts/python.exe
+  // Linux/macOS: .venv/bin/python
+  "python.defaultInterpreterPath": "${workspaceFolder}/.venv",
+  
+  // Disable automatic environment activation (faster startup)
+  "python.terminal.activateEnvironment": false,
+  
+  // Enable faster Python language server
+  "python.languageServer": "Pylance",
+  
+  // Optimize file watching to exclude virtual environment
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/node_modules/**": true,
+    "**/.venv/**": true,
+    "**/venv/**": true,
+    "**/env/**": true,
+    "**/__pycache__/**": true,
+    "**/.pytest_cache/**": true,
+    "**/frontend/build/**": true,
+    "**/frontend/dist/**": true,
+    "**/frontend/node_modules/**": true
+  },
+  
+  // Exclude from search to improve performance
+  "search.exclude": {
+    "**/.git": true,
+    "**/.venv": true,
+    "**/venv": true,
+    "**/env": true,
+    "**/node_modules": true,
+    "**/__pycache__": true,
+    "**/.pytest_cache": true,
+    "**/frontend/build": true,
+    "**/frontend/dist": true,
+    "**/frontend/node_modules": true
+  },
+  
+  // Optimize file indexing
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/.pytest_cache": true
+  },
+  
+  // Python linting configuration (disabled for faster performance)
+  // Enable and configure specific linters in your local settings if needed
+  "python.linting.enabled": false,
+  
+  // Editor performance optimizations
+  "editor.quickSuggestions": {
+    "other": true,
+    "comments": false,
+    "strings": false
+  },
+  
+  // Disable telemetry for faster performance
+  "telemetry.telemetryLevel": "off"
+}

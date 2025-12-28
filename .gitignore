@@ -6,6 +6,8 @@ __pycache__/
 .Python
 env/
 venv/
+.venv/
+pyvenv.cfg
 ENV/
 build/
 develop-eggs/
@@ -22,6 +24,8 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+.pytest_cache/
+*.pyc
 
 # Node.js / React
 node_modules/
@@ -36,11 +40,12 @@ yarn-error.log*
 /frontend/dist
 
 # IDEs
-.vscode/
 .idea/
 *.swp
 *.swo
 *~
+# Keep VS Code settings for performance optimization
+# .vscode/ - now included in repo
 
 # OS
 .DS_Store
