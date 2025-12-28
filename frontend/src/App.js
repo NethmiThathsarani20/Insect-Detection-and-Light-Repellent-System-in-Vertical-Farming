@@ -44,7 +44,7 @@ function App() {
         const now = new Date();
         const detection = {
           name: data.pest,
-          confidence: Math.floor(Math.random() * 15) + 85, // 85-99% confidence
+          confidence: data.confidence || 90, // Use backend confidence or default to 90%
           date: now.toLocaleDateString(),
           time: now.toLocaleTimeString(),
           pattern: data.pattern,
@@ -65,7 +65,7 @@ function App() {
         const now = new Date();
         const detection = {
           name: data.pest,
-          confidence: Math.floor(Math.random() * 15) + 85,
+          confidence: data.confidence || 90,
           date: now.toLocaleDateString(),
           time: now.toLocaleTimeString(),
           pattern: data.pattern,
