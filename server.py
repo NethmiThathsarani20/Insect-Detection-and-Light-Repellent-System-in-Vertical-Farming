@@ -3,7 +3,7 @@ import time
 import cv2
 import numpy as np
 import threading
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 from ultralytics import YOLO
 
@@ -34,12 +34,7 @@ is_treatment_active = False
 CONFIRMATION_DELAY = 5      # 5 Seconds to confirm pest
 TREATMENT_DURATION = 20 * 60 # 20 Minutes
 
-# --- 1. HOME PAGE ---
-@app.route("/")
-def index():
-    return render_template("index.html")
-
-# --- 2. SWITCH CAMERA SOURCE ---
+# --- 1. SWITCH CAMERA SOURCE ---
 @app.route("/switch_source/<source>")
 def switch_source(source):
     global active_source, webcam
@@ -74,7 +69,7 @@ def webcam_processing_loop():
         
         time.sleep(0.1)  # Process at ~10 FPS
 
-# --- 3. ESP32 IMAGE RECEIVER (POST) ---
+# --- 2. ESP32 IMAGE RECEIVER (POST) ---
 @app.route("/detect", methods=["POST"])
 def detect():
     global global_frame
@@ -97,7 +92,7 @@ def detect():
     # If webcam is active, just return current pattern to keep ESP32 lights updated
     return jsonify({"pattern": current_active_pattern})
 
-# --- 4. CORE LOGIC (AI + TIMERS) ---
+# --- 3. CORE LOGIC (AI + TIMERS) ---
 def process_frame_logic(img):
     global global_frame, first_detection_time, treatment_end_time 
     global current_active_pattern, current_pest_name, current_confidence, is_treatment_active
@@ -182,7 +177,7 @@ def process_frame_logic(img):
         current_confidence = 0
         return 1
 
-# --- 5. ROUTES FOR UI DATA ---
+# --- 4. ROUTES FOR UI DATA ---
 
 @app.route('/get_status')
 def get_status():
@@ -200,4 +195,4 @@ def get_status():
     })
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=False)
