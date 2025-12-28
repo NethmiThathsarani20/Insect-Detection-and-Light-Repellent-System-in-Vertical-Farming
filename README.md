@@ -38,67 +38,35 @@ A professional IoT system for detecting insects in vertical farming environments
 
 ## Installation
 
-### Quick Start for VS Code Users
-
-📘 **[Complete VS Code Installation Guide →](VSCODE_INSTALLATION_GUIDE.md)**
-
-For step-by-step instructions on installing all dependencies correctly in VS Code, including troubleshooting tips, see the [VS Code Installation Guide](VSCODE_INSTALLATION_GUIDE.md).
+📘 **[Quick Installation Guide →](INSTALLATION.md)** - Complete setup instructions with troubleshooting
 
 ### Prerequisites
 - Python 3.8+
 - Node.js 14+
-- npm or yarn
-- VS Code (recommended)
 
-**Note:** For optimal VS Code performance and faster virtual environment loading, see [VSCODE_SETUP.md](VSCODE_SETUP.md)
+**Optional:** For VS Code users, see [VSCODE_SETUP.md](VSCODE_SETUP.md) for editor optimization tips
 
 ### Backend Setup
 
-#### Automated Setup (Recommended)
+Run automated setup script:
 
-**Windows:**
+**Windows:** `setup.bat`  
+**Linux/macOS:** `./setup.sh`
+
+Or manually:
 ```bash
-setup.bat
-```
-
-**Linux/macOS:**
-```bash
-chmod +x setup.sh
-./setup.sh
-```
-
-#### Manual Setup
-
-1. Create and activate virtual environment:
-
-**Windows:**
-```bash
+# Create virtual environment
 python -m venv .venv
-.venv\Scripts\activate
-```
 
-**Linux/macOS:**
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-```
-
-2. Install Python dependencies:
-```bash
+# Activate (Windows: .venv\Scripts\activate, Linux/macOS: source .venv/bin/activate)
+# Then install dependencies
 pip install -r requirements.txt
 ```
 
-3. Ensure the YOLO model file `best.pt` is in the root directory
-
 ### Frontend Setup
 
-1. Navigate to the frontend directory:
 ```bash
 cd frontend
-```
-
-2. Install dependencies:
-```bash
 npm install
 ```
 
@@ -107,10 +75,14 @@ npm install
 ### Start Backend Server
 
 ```bash
+# Activate virtual environment first
+# Windows: .venv\Scripts\activate
+# Linux/macOS: source .venv/bin/activate
+
 python server.py
 ```
 
-The backend server will run on `http://localhost:5000`
+Backend runs on `http://localhost:5000`
 
 ### Start React Frontend
 
@@ -120,6 +92,8 @@ In a new terminal:
 cd frontend
 npm start
 ```
+
+Frontend runs on `http://localhost:3000`
 
 The React app will run on `http://localhost:3000`
 
