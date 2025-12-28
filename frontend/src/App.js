@@ -25,6 +25,7 @@ function App() {
   const [detectionHistory, setDetectionHistory] = useState([]);
   const [lastDetection, setLastDetection] = useState(null);
   const [currentDetection, setCurrentDetection] = useState(null);
+  const [detectionImage, setDetectionImage] = useState(null);
 
   // Fetch status from backend
   const fetchStatus = useCallback(async () => {
@@ -38,6 +39,11 @@ function App() {
       setRemainingTime(data.remaining_time);
       setCurrentSource(data.source);
       setSystemStatus(true);
+
+      // Update detection image if available
+      if (data.image) {
+        setDetectionImage(data.image);
+      }
 
       // Detect new insect and create alert
       if (data.pest !== 'None' && data.pest !== lastDetection) {
@@ -60,6 +66,7 @@ function App() {
           setLastDetection(null);
         }
         setCurrentDetection(null);
+        // Keep the image for a while even when detection clears
       } else if (data.pest !== 'None' && currentDetection === null) {
         // Recreate current detection if page was refreshed
         const now = new Date();
@@ -128,6 +135,7 @@ function App() {
           <DetectedInsectDisplay
             detection={currentDetection}
             detectionHistory={detectionHistory}
+            detectionImage={detectionImage}
           />
         </div>
 

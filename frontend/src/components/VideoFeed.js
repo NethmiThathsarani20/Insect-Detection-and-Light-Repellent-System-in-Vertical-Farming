@@ -1,9 +1,7 @@
 import React from 'react';
 import { FaBug } from 'react-icons/fa';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
-
-const DetectedInsectDisplay = ({ detection, detectionHistory }) => {
+const DetectedInsectDisplay = ({ detection, detectionHistory, detectionImage }) => {
   // Show the most recent detection or a placeholder
   const currentDetection = detection && detection.name !== 'None' ? detection : null;
   const latestDetection = currentDetection || (detectionHistory.length > 0 ? detectionHistory[0] : null);
@@ -21,14 +19,23 @@ const DetectedInsectDisplay = ({ detection, detectionHistory }) => {
 
   return (
     <div className="detection-display">
-      {/* Video Feed */}
-      <div className="video-feed-container">
-        <img 
-          src={`${API_BASE_URL}/video_feed`} 
-          alt="Live Video Feed" 
-          className="video-feed"
-        />
-      </div>
+      {/* Detection Image or Placeholder */}
+      {currentDetection && detectionImage ? (
+        <div className="detection-image-container">
+          <img 
+            src={`data:image/jpeg;base64,${detectionImage}`} 
+            alt="Detected Insect" 
+            className="detection-image"
+          />
+        </div>
+      ) : (
+        <div className="detection-image-placeholder">
+          <FaBug className="insect-icon-large" />
+          <div className="detection-subtitle">
+            {currentDetection ? 'Processing Image...' : 'No Detection Yet'}
+          </div>
+        </div>
+      )}
 
       {/* Detection Info */}
       {currentDetection ? (
@@ -112,7 +119,7 @@ const DetectedInsectDisplay = ({ detection, detectionHistory }) => {
           </div>
           <div className="system-info">
             <p>The system is actively monitoring for pests.</p>
-            <p>Alerts will appear when insects are detected.</p>
+            <p>Captured images will appear when insects are detected.</p>
           </div>
         </div>
       )}

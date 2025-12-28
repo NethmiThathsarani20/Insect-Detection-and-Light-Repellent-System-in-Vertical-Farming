@@ -142,15 +142,19 @@ body {
   border: 1px solid #e0e0e0;
 }
 
-/* Video Feed Container */
-.video-feed-container {
+/* Detection Image Container */
+.detection-image-container {
   width: 100%;
   background: #000;
   position: relative;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
 }
 
-.video-feed {
+.detection-image {
   width: 100%;
   height: auto;
   display: block;
