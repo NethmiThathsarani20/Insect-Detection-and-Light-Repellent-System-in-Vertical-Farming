@@ -38,21 +38,57 @@ A professional IoT system for detecting insects in vertical farming environments
 
 ## Installation
 
+### Quick Start for VS Code Users
+
+📘 **[Complete VS Code Installation Guide →](VSCODE_INSTALLATION_GUIDE.md)**
+
+For step-by-step instructions on installing all dependencies correctly in VS Code, including troubleshooting tips, see the [VS Code Installation Guide](VSCODE_INSTALLATION_GUIDE.md).
+
 ### Prerequisites
 - Python 3.8+
 - Node.js 14+
 - npm or yarn
+- VS Code (recommended)
 
 **Note:** For optimal VS Code performance and faster virtual environment loading, see [VSCODE_SETUP.md](VSCODE_SETUP.md)
 
 ### Backend Setup
 
-1. Install Python dependencies:
+#### Automated Setup (Recommended)
+
+**Windows:**
+```bash
+setup.bat
+```
+
+**Linux/macOS:**
+```bash
+chmod +x setup.sh
+./setup.sh
+```
+
+#### Manual Setup
+
+1. Create and activate virtual environment:
+
+**Windows:**
+```bash
+python -m venv .venv
+.venv\Scripts\activate
+```
+
+**Linux/macOS:**
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+2. Install Python dependencies:
 ```bash
 pip install -r requirements.txt
 ```
 
-2. Ensure the YOLO model file `best (2).pt` is in the root directory
+3. Ensure the YOLO model file `best.pt` is in the root directory
 
 ### Frontend Setup
 
