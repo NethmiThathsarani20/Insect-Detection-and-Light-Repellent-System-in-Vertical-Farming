@@ -46,10 +46,9 @@
     "**/.pytest_cache": true
   },
   
-  // Python linting configuration (lightweight)
-  "python.linting.enabled": true,
-  "python.linting.pylintEnabled": false,
-  "python.linting.flake8Enabled": false,
+  // Python linting configuration (disabled for faster performance)
+  // Enable and configure specific linters in your local settings if needed
+  "python.linting.enabled": false,
   
   // Editor performance optimizations
   "editor.quickSuggestions": {

@@ -13,6 +13,7 @@ if %ERRORLEVEL% NEQ 0 (
 )
 
 REM Verify Python version is 3.8 or higher
+REM This checks if sys.version_info >= (3, 8) and exits with code 0 if true, 1 if false
 python -c "import sys; exit(0 if sys.version_info >= (3, 8) else 1)" >nul 2>nul
 if %ERRORLEVEL% NEQ 0 (
     echo ❌ Python 3.8 or higher is required.
