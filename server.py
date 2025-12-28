@@ -3,9 +3,11 @@ import time
 import cv2
 import numpy as np
 from flask import Flask, request, jsonify, render_template, Response
+from flask_cors import CORS
 from ultralytics import YOLO
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS for React frontend
 
 # --- CONFIGURATION ---
 # Loading the uploaded model
@@ -24,6 +26,7 @@ first_detection_time = None
 treatment_end_time = 0 
 current_active_pattern = 1 # Default: 1 (Safe/Growth Mode)
 current_pest_name = "None"
+current_confidence = 0  # Store confidence level
 is_treatment_active = False
 
 # Constants
@@ -78,7 +81,7 @@ def detect():
 # --- 4. CORE LOGIC (AI + TIMERS) ---
 def process_frame_logic(img):
     global global_frame, first_detection_time, treatment_end_time 
-    global current_active_pattern, current_pest_name, is_treatment_active
+    global current_active_pattern, current_pest_name, current_confidence, is_treatment_active
 
     # AI Inference
     results = model(img, conf=0.45)
@@ -86,6 +89,7 @@ def process_frame_logic(img):
     pest_found = False
     detected_pest = "None"
     detected_pattern = 1 # Default Safe (Purple/Growth)
+    detected_confidence = 0
 
     # Draw Bounding Boxes
     for r in results:
@@ -93,16 +97,19 @@ def process_frame_logic(img):
             # Draw Box
             x1, y1, x2, y2 = map(int, box.xyxy[0])
             
-            # Label
+            # Label and confidence
             cls_id = int(box.cls[0])
+            confidence = float(box.conf[0])
+            
             if cls_id < len(PEST_CLASSES):
                 detected_pest = PEST_CLASSES[cls_id]
+                detected_confidence = int(confidence * 100)
                 pest_found = True
                 
                 # Visuals: Box and Label
                 color = (0, 0, 255) # Red box
                 cv2.rectangle(img, (x1, y1), (x2, y2), color, 2)
-                cv2.putText(img, detected_pest, (x1, y1 - 10), 
+                cv2.putText(img, f"{detected_pest} {detected_confidence}%", (x1, y1 - 10), 
                             cv2.FONT_HERSHEY_SIMPLEX, 0.6, color, 2)
 
                 # --- SCIENTIFIC COLOR LOGIC ---
@@ -141,6 +148,7 @@ def process_frame_logic(img):
                 # 5 Seconds Passed -> ACTIVATE MODE
                 current_active_pattern = detected_pattern
                 current_pest_name = detected_pest
+                current_confidence = detected_confidence
                 treatment_end_time = current_time + TREATMENT_DURATION
                 
                 first_detection_time = None 
@@ -152,6 +160,7 @@ def process_frame_logic(img):
         first_detection_time = None
         current_active_pattern = 1
         current_pest_name = "None"
+        current_confidence = 0
         return 1
 
 # --- 5. WEBCAM LOOP ---
@@ -189,6 +198,7 @@ def get_status():
     return jsonify({
         "pest": current_pest_name,
         "pattern": current_active_pattern,
+        "confidence": current_confidence,
         "active": is_treatment_active,
         "remaining_time": remaining,
         "source": active_source
