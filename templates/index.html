@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Pest Management System | Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c3e50; /* Professional Dark Blue */
+            --secondary-color: #ecf0f1; /* Light Grey */
+            --accent-color: #3498db; /* Blue */
+            --success-color: #27ae60; /* Green */
+            --warning-color: #e67e22; /* Orange */
+            --danger-color: #c0392b; /* Red */
+            --card-bg: #ffffff;
+            --bg-color: #f4f6f9;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            color: #333;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- NAVIGATION BAR --- */
+        .navbar {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15); /* More shadow for depth */
+        }
+
+        .navbar-brand {
+            font-size: 28px; /* Increased Size */
+            font-weight: 700;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-transform: uppercase;
+        }
+
+        .navbar-icon {
+            font-size: 32px; /* Bigger Icon */
+        }
+
+        .status-badge {
+            font-size: 14px; /* Bigger Text */
+            font-weight: 500;
+            background: rgba(255,255,255,0.15);
+            padding: 8px 15px;
+            border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        /* --- MAIN DASHBOARD LAYOUT --- */
+        .container {
+            flex: 1;
+            padding: 30px;
+            display: grid;
+            grid-template-columns: 2fr 1fr; /* 2/3 Video, 1/3 Controls */
+            gap: 30px;
+            height: calc(100vh - 80px);
+            box-sizing: border-box;
+        }
+
+        /* --- CARDS --- */
+        .card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08); /* Better Shadow */
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #e0e0e0;
+        }
+
+        .card-header {
+            font-size: 18px; /* Bigger Header */
+            font-weight: 700;
+            color: #444;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* --- VIDEO FEED SECTION --- */
+        .video-wrapper {
+            flex: 1;
+            background: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #ccc;
+        }
+
+        .video-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .live-indicator {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(220, 0, 0, 0.9);
+            color: white;
+            padding: 6px 15px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        .blink {
+            width: 10px;
+            height: 10px;
+            background: white;
+            border-radius: 50%;
+            animation: blinking 1.5s infinite;
+        }
+
+        @keyframes blinking { 0% { opacity: 1; } 50% { opacity: 0; } 100% { opacity: 1; } }
+
+        /* --- CONTROLS SECTION --- */
+        .control-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        /* Metric Box Styling */
+        .metric-box {
+            background: #f8f9fa;
+            border-left: 6px solid #ccc;
+            padding: 18px;
+            border-radius: 6px;
+            margin-bottom: 18px;
+            transition: all 0.3s ease;
+        }
+
+        .metric-label {
+            font-size: 13px;
+            color: #666;
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .metric-value {
+            font-size: 32px; /* Large, Clear Numbers */
+            font-weight: 800;
+            color: #2c3e50;
+            margin-top: 5px;
+        }
+
+        /* --- DYNAMIC STATES FOR METRICS --- */
+        .state-safe { border-left-color: var(--success-color); background: #e8f8f5; }
+        .state-safe .metric-value { color: var(--success-color); }
+
+        .state-blue { border-left-color: var(--accent-color); background: #eaf2f8; }
+        .state-blue .metric-value { color: var(--accent-color); }
+
+        .state-red { border-left-color: var(--danger-color); background: #fdedec; }
+        .state-red .metric-value { color: var(--danger-color); }
+
+        /* --- BUTTONS --- */
+        .btn-group {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px; /* Bigger Text */
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #e0e0e0;
+            color: #555;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px; /* Space between icon and text */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .btn-icon {
+            font-size: 24px; /* Clearly visible icons */
+        }
+
+        .btn:hover { background: #d0d0d0; transform: translateY(-2px); }
+
+        .btn.active {
+            background: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 8px rgba(44, 62, 80, 0.4);
+            transform: translateY(0);
+        }
+
+        /* --- FOOTER --- */
+        .footer {
+            text-align: center;
+            padding: 15px;
+            font-size: 13px;
+            color: #777;
+            background: #fff;
+            border-top: 1px solid #eee;
+            font-weight: 500;
+        }
+
+        /* --- TIMER --- */
+        .timer-display {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 42px; /* Giant Timer */
+            letter-spacing: 2px;
+            color: #333;
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <span class="navbar-icon">🛡️</span> Smart Pest Management System
+        </div>
+        <div class="status-badge">
+            <span style="font-size: 18px;">🟢</span> Status: <span id="system-status-text">System Online</span>
+        </div>
+    </nav>
+
+    <div class="container">
+        
+        <div class="card" style="padding: 0; overflow: hidden; border: none; box-shadow: none; background: transparent;">
+            <div class="video-wrapper">
+                <div class="live-indicator">
+                    <div class="blink"></div> LIVE FEED
+                </div>
+                <img src="{{ url_for('video_feed') }}" alt="Camera Feed Initializing...">
+            </div>
+            <div style="padding: 15px; background: #fff; border-radius: 0 0 10px 10px; border: 1px solid #e0e0e0; border-top: none; display: flex; justify-content: space-between;">
+                <span style="font-size: 14px; color: #555; font-weight: 500;">Input Source: <strong id="current-source-text" style="color: var(--primary-color);">ESP32-CAM</strong></span>
+                <span style="font-size: 14px; color: #555;">Resolution: <strong>640x480</strong></span>
+            </div>
+        </div>
+
+        <div class="control-panel">
+            
+            <div class="card">
+                <div class="card-header">
+                    <span>🎥</span> Video Input Source
+                </div>
+                <div class="btn-group">
+                    <button id="btn-esp32" class="btn active" onclick="setSource('esp32')">
+                        <span class="btn-icon">📡</span> ESP32-CAM
+                    </button>
+                    <button id="btn-webcam" class="btn" onclick="setSource('webcam')">
+                        <span class="btn-icon">📷</span> Webcam
+                    </button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <span>📊</span> Real-time Analysis
+                </div>
+                
+                <div class="metric-box" id="pest-metric-box">
+                    <div class="metric-label">Detected Species</div>
+                    <div class="metric-value" id="pest-name">None</div>
+                </div>
+
+                <div class="metric-box state-safe" id="pattern-metric-box">
+                    <div class="metric-label">Active Countermeasure</div>
+                    <div class="metric-value" id="pattern-name">Growth Mode</div>
+                    <div style="font-size: 13px; margin-top: 8px; color: #555; font-weight: 500;" id="pattern-desc">
+                        Spectrum: Purple (Red+Blue)
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <span>⏳</span> Treatment Duration
+                </div>
+                <div style="text-align: center; padding: 10px;">
+                    <div class="timer-display" id="timer">00:00</div>
+                    <div style="font-size: 14px; color: #777; margin-top: 5px; font-weight: 500;">Time Remaining</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="footer">
+        &copy; 2025 Undergraduate Research Project | Faculty of Engineering Technology
+    </div>
+
+    <script>
+        // Poll the server every 0.5 second for smoother updates
+        setInterval(fetchStatus, 500);
+
+        function fetchStatus() {
+            fetch('/get_status')
+                .then(response => response.json())
+                .then(data => {
+                    // 1. Update Pest Name
+                    const pestNameEl = document.getElementById('pest-name');
+                    const pestBox = document.getElementById('pest-metric-box');
+                    
+                    if (data.pest === "None") {
+                        pestNameEl.innerText = "No Threats";
+                        pestNameEl.style.color = "#333";
+                        pestBox.style.borderLeftColor = "#ccc";
+                    } else {
+                        pestNameEl.innerText = data.pest;
+                        pestNameEl.style.color = "#c0392b"; 
+                        pestBox.style.borderLeftColor = "#c0392b";
+                    }
+
+                    // 2. Update Countermeasure (Pattern)
+                    const patternBox = document.getElementById('pattern-metric-box');
+                    const patternName = document.getElementById('pattern-name');
+                    const patternDesc = document.getElementById('pattern-desc');
+
+                    // Reset Classes
+                    patternBox.classList.remove('state-safe', 'state-blue', 'state-red');
+
+                    if (data.pattern == 1) {
+                        patternBox.classList.add('state-safe');
+                        patternName.innerText = "Growth Mode";
+                        patternDesc.innerText = "Spectrum: Purple (Photosynthesis Opt.)";
+                    } else if (data.pattern == 2) {
+                        patternBox.classList.add('state-blue');
+                        patternName.innerText = "Repellent Mode";
+                        patternDesc.innerText = "Spectrum: Blue (Aphid/Mite Control)";
+                    } else if (data.pattern == 4) {
+                        patternBox.classList.add('state-red');
+                        patternName.innerText = "Visual Masking";
+                        patternDesc.innerText = "Spectrum: Red (Thrips/Whitefly Disruption)";
+                    }
+
+                    // 3. Update Timer
+                    const timerEl = document.getElementById('timer');
+                    if (data.active) {
+                        let minutes = Math.floor(data.remaining_time / 60);
+                        let seconds = data.remaining_time % 60;
+                        timerEl.innerText = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+                        timerEl.style.color = data.pattern == 4 ? "#c0392b" : "#2980b9";
+                    } else {
+                        timerEl.innerText = "00:00";
+                        timerEl.style.color = "#ccc";
+                    }
+
+                    // 4. Update Source Text
+                    const sourceText = document.getElementById('current-source-text');
+                    sourceText.innerText = data.source === 'esp32' ? "ESP32-CAM" : "Webcam";
+                })
+                .catch(err => console.error("Error fetching status:", err));
+        }
+
+        function setSource(source) {
+            fetch(`/switch_source/${source}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('btn-esp32').classList.remove('active');
+                    document.getElementById('btn-webcam').classList.remove('active');
+                    
+                    if (source === 'esp32') {
+                        document.getElementById('btn-esp32').classList.add('active');
+                    } else {
+                        document.getElementById('btn-webcam').classList.add('active');
+                    }
+                });
+        }
+    </script>
+</body>
+</html>
