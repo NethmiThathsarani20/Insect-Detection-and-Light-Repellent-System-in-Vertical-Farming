@@ -1,6 +1,7 @@
 #!/bin/bash
 
-# Setup script for the Insect Detection System
+# Setup script for Linux/macOS
+# For Windows users, please use setup.bat instead
 # This script creates the virtual environment and installs dependencies
 
 echo "🐛 Setting up Insect Detection System..."
@@ -17,13 +18,7 @@ python3 -m venv .venv
 
 # Activate virtual environment
 echo "🔧 Activating virtual environment..."
-if [[ "$OSTYPE" == "msys" || "$OSTYPE" == "win32" ]]; then
-    # Windows
-    source .venv/Scripts/activate
-else
-    # Linux/macOS
-    source .venv/bin/activate
-fi
+source .venv/bin/activate
 
 # Upgrade pip
 echo "⬆️ Upgrading pip..."
@@ -36,11 +31,7 @@ pip install -r requirements.txt
 echo "✅ Backend setup complete!"
 echo ""
 echo "To activate the virtual environment in the future:"
-if [[ "$OSTYPE" == "msys" || "$OSTYPE" == "win32" ]]; then
-    echo "  .venv\\Scripts\\activate"
-else
-    echo "  source .venv/bin/activate"
-fi
+echo "  source .venv/bin/activate"
 echo ""
 echo "To start the backend server:"
 echo "  python server.py"

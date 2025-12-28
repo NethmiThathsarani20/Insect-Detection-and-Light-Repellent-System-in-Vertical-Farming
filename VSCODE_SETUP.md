@@ -63,7 +63,7 @@ Search is configured to skip:
 
 ### Virtual Environment Not Loading Fast Enough
 
-1. **Verify interpreter path**: Check that `.vscode/settings.json` has the correct path for your OS:
+1. **Verify interpreter path**: The `.vscode/settings.json` uses a platform-agnostic path (`${workspaceFolder}/.venv`). VS Code automatically resolves this to:
    - Windows: `${workspaceFolder}/.venv/Scripts/python.exe`
    - Linux/macOS: `${workspaceFolder}/.venv/bin/python`
 
@@ -99,9 +99,9 @@ source .venv/bin/activate
 ## Recommended Extensions
 
 The project recommends these VS Code extensions (see `.vscode/extensions.json`):
-- **Python** - Python language support
-- **Pylance** - Fast Python language server
-- **Prettier** - Code formatting for frontend
+- **Python** (`ms-python.python`) - Core Python language support with IntelliSense, linting, and debugging
+- **Pylance** (`ms-python.vscode-pylance`) - Fast, feature-rich Python language server for improved performance
+- **Prettier** (`esbenp.prettier-vscode`) - Code formatter for JavaScript/TypeScript in the React frontend
 
 ## Additional Performance Tips
 

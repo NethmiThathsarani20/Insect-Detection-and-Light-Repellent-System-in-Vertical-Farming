@@ -1,6 +1,9 @@
 {
   // Python Configuration
-  "python.defaultInterpreterPath": "${workspaceFolder}/.venv/Scripts/python.exe",
+  // Note: VS Code will automatically use the correct path separator for your OS
+  // Windows: .venv/Scripts/python.exe
+  // Linux/macOS: .venv/bin/python
+  "python.defaultInterpreterPath": "${workspaceFolder}/.venv",
   
   // Disable automatic environment activation (faster startup)
   "python.terminal.activateEnvironment": false,
