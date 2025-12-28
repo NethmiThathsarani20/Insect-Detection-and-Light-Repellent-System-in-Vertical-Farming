@@ -3,7 +3,9 @@ import time
 import cv2
 import numpy as np
 import threading
-from flask import Flask, request, jsonify, render_template
+import base64
+from datetime import datetime
+from flask import Flask, request, jsonify, render_template, send_file
 from flask_cors import CORS
 from ultralytics import YOLO
 
@@ -17,10 +19,17 @@ model = YOLO("best.pt")
 # Class names based on your training data
 PEST_CLASSES = ["Aphids", "Mites", "RedSpider", "Thrips", "Whitefly"]
 
+# Create directory for detected images
+DETECTED_IMAGES_DIR = "detected_images"
+if not os.path.exists(DETECTED_IMAGES_DIR):
+    os.makedirs(DETECTED_IMAGES_DIR)
+
 # --- GLOBAL VARIABLES ---
 global_frame = None
 active_source = 'esp32'  # Options: 'esp32' or 'webcam'
-webcam = None 
+webcam = None
+latest_detection_image = None  # Store latest detected image path
+latest_detection_image_base64 = None  # Store base64 encoded image
 
 # --- TIMING & LOGIC VARIABLES ---
 first_detection_time = None 
@@ -43,20 +52,37 @@ def index():
 @app.route("/switch_source/<source>")
 def switch_source(source):
     global active_source, webcam
-    active_source = source
     
     if source == 'webcam':
-        if webcam is None:
-            # Try index 0 or 1 if 0 doesn't work
+        if webcam is None or not webcam.isOpened():
+            # Release existing webcam if it exists but is not opened
+            if webcam is not None:
+                webcam.release()
+            
+            # Try to open webcam
             webcam = cv2.VideoCapture(0)
-            # Start webcam processing thread
-            threading.Thread(target=webcam_processing_loop, daemon=True).start()
-    else:
+            if not webcam.isOpened():
+                # Try alternative index
+                webcam.release()
+                webcam = cv2.VideoCapture(1)
+            
+            if webcam.isOpened():
+                active_source = source
+                # Start webcam processing thread
+                threading.Thread(target=webcam_processing_loop, daemon=True).start()
+                return jsonify({"status": "success", "source": source})
+            else:
+                webcam = None
+                return jsonify({"status": "error", "message": "Failed to open webcam"}), 500
+        else:
+            active_source = source
+            return jsonify({"status": "success", "source": source})
+    else:  # esp32
+        active_source = source
         if webcam is not None:
             webcam.release()
             webcam = None
-            
-    return jsonify({"status": "success", "source": source})
+        return jsonify({"status": "success", "source": source})
 
 # --- WEBCAM PROCESSING LOOP (Background Thread) ---
 def webcam_processing_loop():
@@ -101,6 +127,7 @@ def detect():
 def process_frame_logic(img):
     global global_frame, first_detection_time, treatment_end_time 
     global current_active_pattern, current_pest_name, current_confidence, is_treatment_active
+    global latest_detection_image, latest_detection_image_base64
 
     # AI Inference
     results = model(img, conf=0.45)
@@ -142,7 +169,7 @@ def process_frame_logic(img):
                 break 
         if pest_found: break
 
-    # Update Global Frame for Video Feed
+    # Update Global Frame for potential use
     global_frame = img
 
     # --- TIMER LOGIC ---
@@ -164,11 +191,22 @@ def process_frame_logic(img):
         else:
             elapsed = current_time - first_detection_time
             if elapsed >= CONFIRMATION_DELAY:
-                # 5 Seconds Passed -> ACTIVATE MODE
+                # 5 Seconds Passed -> ACTIVATE MODE & SAVE IMAGE
                 current_active_pattern = detected_pattern
                 current_pest_name = detected_pest
                 current_confidence = detected_confidence
                 treatment_end_time = current_time + TREATMENT_DURATION
+                
+                # Save the detected image with timestamp (microseconds precision, first 3 digits kept)
+                timestamp = datetime.now().strftime('%Y%m%d_%H%M%S_%f')[:-3]  # Keep first 3 digits of microseconds
+                image_filename = f"{detected_pest}_{timestamp}.jpg"
+                image_path = os.path.join(DETECTED_IMAGES_DIR, image_filename)
+                cv2.imwrite(image_path, img)
+                latest_detection_image = image_filename
+                
+                # Convert to base64 for easy transmission
+                _, buffer = cv2.imencode('.jpg', img)
+                latest_detection_image_base64 = base64.b64encode(buffer).decode('utf-8')
                 
                 first_detection_time = None 
                 return current_active_pattern
@@ -196,8 +234,22 @@ def get_status():
         "confidence": current_confidence,
         "active": is_treatment_active,
         "remaining_time": remaining,
-        "source": active_source
+        "source": active_source,
+        "image": latest_detection_image_base64  # Send base64 encoded image
     })
+
+# --- 6. GET DETECTED IMAGE ---
+@app.route('/detected_image/<filename>')
+def get_detected_image(filename):
+    """Serve a specific detected image"""
+    try:
+        image_path = os.path.join(DETECTED_IMAGES_DIR, filename)
+        if os.path.exists(image_path):
+            return send_file(image_path, mimetype='image/jpeg')
+        else:
+            return jsonify({"error": "Image not found"}), 404
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)

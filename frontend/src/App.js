@@ -25,6 +25,7 @@ function App() {
   const [detectionHistory, setDetectionHistory] = useState([]);
   const [lastDetection, setLastDetection] = useState(null);
   const [currentDetection, setCurrentDetection] = useState(null);
+  const [detectionImage, setDetectionImage] = useState(null);
 
   // Fetch status from backend
   const fetchStatus = useCallback(async () => {
@@ -38,6 +39,11 @@ function App() {
       setRemainingTime(data.remaining_time);
       setCurrentSource(data.source);
       setSystemStatus(true);
+
+      // Update detection image if available
+      if (data.image) {
+        setDetectionImage(data.image);
+      }
 
       // Detect new insect and create alert
       if (data.pest !== 'None' && data.pest !== lastDetection) {
@@ -60,6 +66,7 @@ function App() {
           setLastDetection(null);
         }
         setCurrentDetection(null);
+        // Note: Image persists until a new detection occurs
       } else if (data.pest !== 'None' && currentDetection === null) {
         // Recreate current detection if page was refreshed
         const now = new Date();
@@ -82,10 +89,17 @@ function App() {
   // Switch video source
   const handleSourceChange = async (source) => {
     try {
-      await axios.get(`${API_BASE_URL}/switch_source/${source}`);
-      setCurrentSource(source);
+      const response = await axios.get(`${API_BASE_URL}/switch_source/${source}`);
+      if (response.data.status === 'success') {
+        setCurrentSource(source);
+      } else {
+        console.error('Error switching source:', response.data.message);
+        alert(`Failed to switch to ${source}: ${response.data.message || 'Unknown error'}`);
+      }
     } catch (error) {
       console.error('Error switching source:', error);
+      const sourceType = source === 'webcam' ? 'Webcam' : 'ESP32-CAM';
+      alert(`Failed to switch to ${sourceType}. Please ensure your ${sourceType} is connected and not being used by another application.`);
     }
   };
 
@@ -122,6 +136,7 @@ function App() {
           <DetectedInsectDisplay
             detection={currentDetection}
             detectionHistory={detectionHistory}
+            detectionImage={detectionImage}
           />
         </div>
 

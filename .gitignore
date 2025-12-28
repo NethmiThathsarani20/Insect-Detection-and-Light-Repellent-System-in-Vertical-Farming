@@ -27,6 +27,9 @@ wheels/
 .pytest_cache/
 *.pyc
 
+# Detected images directory
+detected_images/
+
 # Node.js / React
 node_modules/
 package-lock.json

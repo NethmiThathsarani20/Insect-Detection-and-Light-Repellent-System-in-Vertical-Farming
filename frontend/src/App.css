@@ -142,12 +142,39 @@ body {
   border: 1px solid #e0e0e0;
 }
 
+/* Detection Image Container */
+.detection-image-container {
+  width: 100%;
+  background: #000;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+}
+
+.detection-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  max-height: 600px;
+  object-fit: contain;
+}
+
+.detection-name {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--danger-color);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
 .detection-active,
 .detection-previous,
 .detection-empty {
   display: flex;
   flex-direction: column;
-  min-height: 500px;
 }
 
 .detection-status-badge {
