@@ -4,10 +4,20 @@ REM This script creates the virtual environment and installs dependencies
 
 echo 🐛 Setting up Insect Detection System...
 
-REM Check if Python is installed
-where python >nul 2>nul
+REM Check if Python is installed and get version
+python --version >nul 2>nul
 if %ERRORLEVEL% NEQ 0 (
     echo ❌ Python is not installed. Please install Python 3.8 or higher.
+    echo Download from: https://www.python.org/downloads/
+    exit /b 1
+)
+
+REM Verify Python version is 3.8 or higher
+python -c "import sys; exit(0 if sys.version_info >= (3, 8) else 1)" >nul 2>nul
+if %ERRORLEVEL% NEQ 0 (
+    echo ❌ Python 3.8 or higher is required.
+    echo Your current version:
+    python --version
     exit /b 1
 )
 

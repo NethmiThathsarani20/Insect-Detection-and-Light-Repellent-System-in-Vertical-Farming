@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e  # Exit immediately if any command fails
 
 # Setup script for Linux/macOS
 # For Windows users, please use setup.bat instead

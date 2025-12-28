@@ -51,9 +51,6 @@
   "python.linting.pylintEnabled": false,
   "python.linting.flake8Enabled": false,
   
-  // Disable automatic virtual environment discovery (use specified path)
-  "python.venvFolders": [],
-  
   // Editor performance optimizations
   "editor.quickSuggestions": {
     "other": true,
