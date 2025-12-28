@@ -55,10 +55,15 @@ def switch_source(source):
     
     if source == 'webcam':
         if webcam is None or not webcam.isOpened():
+            # Release existing webcam if it exists but is not opened
+            if webcam is not None:
+                webcam.release()
+            
             # Try to open webcam
             webcam = cv2.VideoCapture(0)
             if not webcam.isOpened():
                 # Try alternative index
+                webcam.release()
                 webcam = cv2.VideoCapture(1)
             
             if webcam.isOpened():
@@ -67,6 +72,7 @@ def switch_source(source):
                 threading.Thread(target=webcam_processing_loop, daemon=True).start()
                 return jsonify({"status": "success", "source": source})
             else:
+                webcam = None
                 return jsonify({"status": "error", "message": "Failed to open webcam"}), 500
         else:
             active_source = source
@@ -191,8 +197,8 @@ def process_frame_logic(img):
                 current_confidence = detected_confidence
                 treatment_end_time = current_time + TREATMENT_DURATION
                 
-                # Save the detected image with timestamp (convert microseconds to milliseconds)
-                timestamp = datetime.now().strftime('%Y%m%d_%H%M%S_%f')[:-3]  # Truncate last 3 digits for milliseconds
+                # Save the detected image with timestamp (microseconds precision, first 3 digits kept)
+                timestamp = datetime.now().strftime('%Y%m%d_%H%M%S_%f')[:-3]  # Keep first 3 digits of microseconds
                 image_filename = f"{detected_pest}_{timestamp}.jpg"
                 image_path = os.path.join(DETECTED_IMAGES_DIR, image_filename)
                 cv2.imwrite(image_path, img)
