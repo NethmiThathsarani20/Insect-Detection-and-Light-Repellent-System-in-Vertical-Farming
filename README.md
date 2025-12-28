@@ -43,6 +43,8 @@ A professional IoT system for detecting insects in vertical farming environments
 - Node.js 14+
 - npm or yarn
 
+**Note:** For optimal VS Code performance and faster virtual environment loading, see [VSCODE_SETUP.md](VSCODE_SETUP.md)
+
 ### Backend Setup
 
 1. Install Python dependencies:
